@@ -2,7 +2,7 @@ package Simulations
 
 import HelperUtils.{CreateLogger, ObtainConfigReference}
 import org.cloudbus.cloudsim.brokers.DatacenterBrokerSimple
-import org.cloudbus.cloudsim.cloudlets.CloudletSimple
+import org.cloudbus.cloudsim.cloudlets.{Cloudlet, CloudletSimple}
 import org.cloudbus.cloudsim.core.CloudSim
 import org.cloudbus.cloudsim.datacenters.DatacenterSimple
 import org.cloudbus.cloudsim.hosts.HostSimple
@@ -10,6 +10,7 @@ import org.cloudbus.cloudsim.resources.{Pe, PeSimple}
 import org.cloudbus.cloudsim.utilizationmodels.UtilizationModelDynamic
 import org.cloudbus.cloudsim.vms.VmSimple
 import org.cloudsimplus.builders.tables.CloudletsTableBuilder
+import org.cloudsimplus.listeners.CloudletVmEventInfo
 
 import collection.JavaConverters.*
 
@@ -23,6 +24,7 @@ object BasicCloudSimPlusExample:
   val logger = CreateLogger(classOf[BasicCloudSimPlusExample])
 
   def Start() =
+    
     val cloudsim = new CloudSim();
     val broker0 = new DatacenterBrokerSimple(cloudsim);
 
@@ -42,15 +44,20 @@ object BasicCloudSimPlusExample:
       new VmSimple(config.getLong("cloudSimulator.vm.mipsCapacity"), hostPes.length)
       .setRam(config.getLong("cloudSimulator.vm.RAMInMBs"))
       .setBw(config.getLong("cloudSimulator.vm.BandwidthInMBps"))
-      .setSize(config.getLong("cloudSimulator.vm.StorageInMBs"))
+      .setSize(config.getLong("cloudSimulator.vm.StorageInMBs")),new VmSimple(config.getLong("cloudSimulator.vm.mipsCapacity"), hostPes.length)
+        .setRam(config.getLong("cloudSimulator.vm.RAMInMBs"))
+        .setBw(config.getLong("cloudSimulator.vm.BandwidthInMBps"))
+        .setSize(config.getLong("cloudSimulator.vm.StorageInMBs"))
     )
     logger.info(s"Created one virtual machine: $vmList")
 
     val utilizationModel = new UtilizationModelDynamic(config.getDouble("cloudSimulator.utilizationRatio"));
     val cloudletList = new CloudletSimple(config.getLong("cloudSimulator.cloudlet.size"), config.getInt("cloudSimulator.cloudlet.PEs"), utilizationModel) ::
-      new CloudletSimple(config.getLong("cloudSimulator.cloudlet.size"), config.getInt("cloudSimulator.cloudlet.PEs"), utilizationModel) :: Nil
+      (new CloudletSimple(config.getLong("cloudSimulator.cloudlet.size"), config.getInt("cloudSimulator.cloudlet.PEs"), utilizationModel) :: Nil)
 
     logger.info(s"Created a list of cloudlets: $cloudletList")
+
+    cloudletList.head.addOnUpdateProcessingListener(cancelCloudletHalfExecuted)
 
     broker0.submitVmList(vmList.asJava);
     broker0.submitCloudletList(cloudletList.asJava);
@@ -59,3 +66,13 @@ object BasicCloudSimPlusExample:
     cloudsim.start();
 
     new CloudletsTableBuilder(broker0.getCloudletFinishedList()).build();
+
+  def cancelCloudletHalfExecuted(e:CloudletVmEventInfo) = {
+
+    val cloudlet: Cloudlet = e.getCloudlet()
+    if(cloudlet.getFinishedLengthSoFar()>=config.getLong("cloudSimulator.cloudlet.size")/2) {
+      logger.info(s" Intentionally cancelling $cloudlet after executing half of its time")
+      cloudlet.getVm().getCloudletScheduler().cloudletCancel(cloudlet)
+    }
+
+    }

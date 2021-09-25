@@ -1,100 +1,225 @@
-# Homework 1
-### Create cloud simulators in Scala for evaluating executions of applications in cloud datacenters with different characteristics and deployment models.
-### Grade: 8%
-#### This Git repo contains the description of the first homework and an example implementation of a baseline cloud simulation in Scala. This repo can be cloned using the command git clone git@github.com:0x1DOCD00D/CloudOrgSimulator.git. If interested to learn the implementation details, students can clone CloudSimPlus or ingest it directly into IntelliJ from its [website](https://cloudsimplus.org/) or the [Github repo](https://github.com/manoelcampos/cloudsim-plus), however, it is not required for this homework.
-
-## Preliminaries
-As part of  homework assignment you will gain experience with creating and managing your Git repository, obtaining an open-source cloud simulation infrastructure Java project from a public Git repo, creating tests using widely popular Scalatest framework, and expanding on the provided SBT build and run script for your simulation application. Doing this homework is essential for successful completion of the rest of this course, since all other homeworks and the course project will share the same features of this homework: branching, merging, committing, pushing your code into your Git repo, creating test cases and build scripts, and using various tools for diagnosing problems with your applications and the infrastructures that these applications are based on.
-
-First things first, you must create your account at either [BitBucket](https://bitbucket.org/) or [Github](https://github.com/), which are Git repo management systems. You can fork this repository into your account and proceed with the implementation of the homework. Please make sure that you write your name in your README.md in your repo as it is specified on the class roster. Since it is a large class, please use your UIC email address for communications and avoid emails from other accounts like funnybunny2000@gmail.com. If you don't receive a response within 12 hours, please contact your TA or me, it may be a case that your direct emails went to the spam folder.
-
-Next, if you haven't done so, you will install [IntelliJ](https://www.jetbrains.com/student/) with your academic license, the JDK, the Scala runtime and the IntelliJ Scala plugin and the [Simple Build Toolkit (SBT)](https://www.scala-sbt.org/1.x/docs/index.html) and make sure that you can create, compile, and run Java and Scala programs. Please make sure that you can run [various Java tools from your chosen JDK between versions 8 and 16](https://docs.oracle.com/en/java/javase/index.html).
-
-In this and all consecutive homeworks and in the course project you will use logging and configuration management frameworks. You will comment your code extensively and supply logging statements at different logging levels (e.g., TRACE, INFO, ERROR) to record information at some salient points in the executions of your programs. All input and configuration variables must be supplied through configuration files -- hardcoding these values in the source code is prohibited and will be punished by taking a large percentage of points from your total grade! You are expected to use [Logback](https://logback.qos.ch/) and [SLFL4J](https://www.slf4j.org/) for logging and [Typesafe Conguration Library](https://github.com/lightbend/config) for managing configuration files. These and other libraries should be imported into your project using your script [build.sbt](https://www.scala-sbt.org) that I already created for you as a baseline. These libraries and frameworks are widely used in the industry, so learning them is the time well spent to improve your resumes.
-
-Even though CloudSimPlus is written in Java, you can create your cloud simulations using Scala as a fully pure functional (not imperative) implementation. As you see from the StackOverflow survey, knowledge of Scala is highly paid and in great demand, and it is expected that you pick it relatively fast, especially since it is tightly integrated with Java. I recommend using the book on Programming in Scala Fourth and Fifth Editions by Martin Odersky et al. You can obtain this book using the academic subscription on Safari Books Online. There are many other books and resources available on the Internet to learn Scala. Those who know more about functional programming can use the book on Functional Programming in Scala published on Sep 14, 2014 by Paul Chiusano and Runar Bjarnason.
-
-When creating your cloud simulation program code in Scala, you should avoid using **var**s and while/for loops that iterate over collections using [induction variables](https://en.wikipedia.org/wiki/Induction_variable). Instead, you should learn to use collection methods **map**, **flatMap**, **foreach**, **filter** and many others with lambda functions, which make your code linear and easy to understand. Also, avoid mutable variables that expose the internal states of your modules at all cost. Points will be deducted for having unreasonable **var**s and inductive variable loops without explanation why mutation is needed in your code unless it is confined to method scopes - you can always do without it.
+# Homework 1 - Ashwin Bhaskar Srivatsa
+## Description
+As part of this homework we are required to create different cloud simulations on different datacenters which are mixes of Iaas, Paas and Saas model implementation.
 
 ## Overview
-In this homework, you will experiment with creading cloud computing datacenters and running jobs on them to determine how different organizations and pricing strategies result in variabilities of cloud offerings. Of course, creating real cloud computing datacenters takes hundreds of millions of dollars and acres of land and a lot of complicated equipment, and you don't want to spend your money and resources creating physical cloud datacenters for this homework ;-). Instead, we have a cloud simulation framework, a software package that enables cloud engineers to model the cloud environments using different cloud computing models that we study in the lectures. We will use [*CloudSimPlus* simulation framework](https://cloudsimplus.org/) that is an extension of *CloudSim*, a framework and a set of libraries for modeling and simulating cloud computing infrastructure and services.
+To start with this assignment contains implementation of various services and policies in cloud datacenters using the [Cloudsim plus](https://cloudsimplus.org/) framework. There are different simulations that are executed using different configurations with pricing being calculated. The simulations also show the effect of different configuarations on VM and cloudlet allocations by the brokers.
 
-[CloudSimPlus website](https://cloudsimplus.org/) and its early predecessor [CloudSim website](http://www.cloudbus.org/cloudsim/) contain a wealth of information and it is your starting point. Your starting point is to experiment with *CloudSimPlus* and to run [examples that are provided in the corresponding Github repo](https://github.com/manoelcampos/cloudsimplus/tree/master/cloudsim-plus-examples). You should be able to convert these examples in Scala and run them using sbt command line and IntelliJ as I showed in my baseline implementation of the [minimal but complete simulation example](https://cloudsimplus.org/#example). Those who want to read more about modeling physical systems and creating simulations can find ample resources on the Internet - I recommend the following paper by [Anu Maria on Introduction to Modeling and Simulation](http://acqnotes.com/Attachments/White%20Paper%20Introduction%20to%20Modeling%20and%20Simulation%20by%20Anu%20Maria.pdf).
+## Instructions to run
+Using intellij
+Install Intellij, sbt <br/>
+clone the repo - ```https://github.com/Ashwin1234/CloudOrgSimulator``` and navigate to the folder. <br/>
+click on the Simulation.scala file in src and click run. <br/>
+choose the simulation by entering 1,2 or 3, you will get the output of that particular simulation. <br/>
+Using sbt
+Navigate to project folder and type in the following commend ```sbt clean compile run``` <br/>
+choose the simulation by entering 1,2 or 3, you will get the output of that particular simulation. <br/>
+To run the test ```sbt test```
 
-This homework script is written using a retroscripting technique, in which the homework outlines are generally and loosely drawn, and the individual students improvise to create the implementation that fits their refined objectives. In doing so, students are expected to stay within the basic requirements of the homework and they are free to experiments. Asking questions is important, so please ask away!
+## project structure
+1) resources/provider.conf - It is the config file which contains different configuration parameters for Datacenters, Hosts, VMs, cloudlets etc
+2) BasicCloudSimPLusExample.scala - Basic simulation provided by the repo
+3) Simulations/Simulation1.scala - It is the implementation of Iaas configuration and produces the simulation results.
+4) Simulations/Simulation2.scala - It is the implementation of Paas configuration and produces the simulation results.
+5) Simulations/Simulation3.scala - It is the implementation of Saas configuration and produces the simulation results.
+6) Simulations/Simulation.scala - The main file or starting point of execution.
+7) HelperUtils - HelperUtils
+8) Test/test.scala - contains various tests to be performed on the simulations.
 
-## Functionality
-Once you have configured and run the minimal but complete CloudSimPlus example in this project, which should not take you more than 15 minutes, your job is to convert more cloud simulation examples into Scala and add to this project to perform more simulations where you will evaluate two or more datacenters with different characteristics (e.g., operating systems, costs, devices) and policies. Imagine that you are a cloud computing broker and you purchase computing time in bulk from different cloud providers and you sell this time to your customers, so that they can execute their jobs, i.e., cloudlets on the infrastructure of these cloud providers that have different policies and constraints. As a broker, your job is to buy the computing time cheaply and sell it at a good markup. One way to achieve it is to take cloudlets from your customers and estimate how long they will execute. Then you charge for executing cloudlets some fixed fee that represent your cost of resources summarily. Some cloudlets may execute longer than you expected, the other execute faster. If your revenue exceeds your expenses for buying the cloud computing time in bulk, you are in business, otherwise, you will go bankrupt!
+Iaas - Infrastructure as a service where a user can scale up/down the datacenters and can set various policies for VM, cloudlet allocation, scheduling and utilization models.<br />
+Paas - Platform as a service where a user does not have the authority to manage the datacenters and hosts, but can set various policies for VMs and hosts. <br/>
+Saas - Software as a service is the most common one where the brokers have limited control and can only set the scheduling algorithm for the cloudlets.  <br/>
 
-There are different policies that datacenters can use for allocating Virtual Machines (VMs) to hosts, scheduling them for executions on those hosts, determining how network bandwidth is provisioned, and for scheduling cloudlets to execute on different VMs. Randomly assigning these cloudlets to different datacenters may result in situation where the executions of these cloudlets are inefficient and they takes a long time. As a result, you exhaust your supply of the purchased cloud time and you may have to refund the money to your customers, since you cannot fulfil the agreement, and you will go bankrupt. Modeling and simulating the executions of cloudlets in your clouds may help you chose a proper model for your business.
-
-Once you experimented with the examples from *CloudSimPlus*, your next job will be to create simulations where you will evaluate a large cloud provider with many datacenters with different characteristics (e.g., operating systems, costs, devices) and policies. You will form a stream of jobs, dynamically, and feed them into your simulation. You will design your own datacenter with your own network switches and network links. You can organize cloudlets into tasks to accomplish the same job (e.g., a map reduce job where some cloudlets represent mappers and the other cloudlets represent reducers). There are different policies that datacenters can use for allocating Virtual Machines (VMs) to hosts, scheduling them for executions on those hosts, determining how network bandwidth is provisioned, and for scheduling cloudlets to execute on different VMs. Randomly assigning these cloudlets to different datacenters may result in situation where the execution is inefficient and takes a long time. Using a more clever algorithm like assigning tasks to specific clusters where the data is located may lead to more efficient cloud provider services.
-
-Consider a snippet of the code below from one of the examples that come from the *CloudSimPlus* documentation. In it, a network cloud datacenter is created with network hardware that is used to organize hosts in a connected network. VMs can exchange packets/messages using a chosen network topology. Depending on your simulation construct, you may view different levels of performances.
-```java
-protected final NetworkDatacenter createDatacenter() {
-  final int numberOfHosts = EdgeSwitch.PORTS * AggregateSwitch.PORTS * RootSwitch.PORTS;
-  List<Host> hostList = new ArrayList<>(numberOfHosts);
-  for (int i = 0; i < numberOfHosts; i++) {
-      List<Pe> peList = createPEs(HOST_PES, HOST_MIPS);
-      Host host = new NetworkHost(HOST_RAM, HOST_BW, HOST_STORAGE, peList)
-                    .setRamProvisioner(new ResourceProvisionerSimple())
-                    .setBwProvisioner(new ResourceProvisionerSimple())
-                    .setVmScheduler(new VmSchedulerTimeShared());
-      hostList.add(host);
-  }
-
-  NetworkDatacenter dc =
-          new NetworkDatacenter(
-                  simulation, hostList, new VmAllocationPolicySimple());
-  dc.setSchedulingInterval(SCHEDULING_INTERVAL);
-  dc.getCharacteristics()
-        .setCostPerSecond(COST)
-        .setCostPerMem(COST_PER_MEM)
-        .setCostPerStorage(COST_PER_STORAGE)
-        .setCostPerBw(COST_PER_BW);
-  createNetwork(dc);
-  return dc;
+## Simulations
+### Simulation 1
+In Iaas the number of data centers, VMs and the policies are set by the user
+```datacenter{
+os = "Windows 10"
+CostPerSecond=0.01
+CostPerMem=0.02
+CostPerStorage=0.001
+CostPerBw=0.005
+Number=2
 }
 ```
+```
+utilizationratio = 0.80
+Host RAMInMBs = 10000
+Number of VMs = 10
+Number of cloudlets = 15
+cloudlets size = 10,000
+VM mipsCapacity = 1000
+VmScheduling= "TimeShared"
+VmAllocationPolicy=["RoundRobin","BestFit"]
+CloudletScheduling= "SpaceShared"
 
-Your homework can be divided roughly into five steps. First, you learn how *CloudSimPlus* framework is organized and what your building blocks from the *CloudSimPlus* framework you will use. You should explore [the documentation of CloudSimPlus](https://cloudsimplus.org/#docs-help), load *CloudSimPlus* project into IntelliJ and explore its classes, interfaces, and dependencies. Second, you will experiment with designing your own cloud provider organization down to racks/clusters, hosts, virtual machines and processing entities. You will add various policies and load balancing heuristics like randomly allocating tasks to machines or using data locality to guide the task allocation. Next, you will create an implementation of the simulation(s) of your cloud provider using *CloudSimPlus*. Fourth, you will run multiple simulations with different parameters, varying them according to ranges of predefined value or by using probabilistic distribution to generate random values and you will statistically analyze the results and report them in your documentation with explanations why some cloud architectures are more efficient than the others in your simulations.
-
-### Students who use the main textbook will implement three or more datacenters each of which offers different mixes of SaaS, PaaS, IaaS and FaaS model implementations with various pricing criteria. A broker will decide to which datacenter your tasks will be sent based on additional information provided with those tasks, e.g., accessing SaaS services of some application or deploying your own software stack that will service some tasks. You will describe your design of the implementation of your simulation and how your cloud organizations/pricing models lead to different results and explain these results.
-
-### Students who use the alternative textbooks will create simulations that shows how a broadcast storm is created in the cloud that is described in the following alternative textbook: Guide to Reliable Distributed Systems: Building High-Assurance Applications and Cloud-Hosted Services (Texts in Computer Science) by Kenneth Birman. After creating two or more datacenters the implementation should result in a situation where the load is bounced between these datacenters putting a significant overhead on the network communication with little actual work done by the VMs. Understanding the process and implementing it can be done without any regard for a particular cloud service model.
-
-## Baseline
-To be considered for grading, your project should include at least one of your simulation programs written in Scala, your project should be buildable using the SBT, and your documentation in README.md and accompanying files in the project subdirectory *doc* must specify how you create and evaluate your simulated clouds based on the cloud models that we learn in the class/textbooks. Your documentation must include the results of your simulation, the measurement of the runtime parameters of the simulator (e.g., CPU and RAM utilization) including under- and over-provisioning costs and your explanations of how these results help you with your simulation objectives (e.g., choose the right cloud model and configuration). Simply copying Java programs from examples and modifying them a bit (e.g., converting them to Scala or renaming some variables) will result in desk-rejecting your submission.
-
-## Collaboration
-You can post questions and replies, statements, comments, discussion, etc. on Teams using the corresponding channel. For this homework, feel free to share your ideas, mistakes, code fragments, commands from scripts, and some of your technical solutions with the rest of the class, and you can ask and advise others using Teams on where resources and sample programs can be found on the Internet, how to resolve dependencies and configuration issues. When posting question and answers on Tea,s, please make sure that you selected the appropriate channel, to ensure that all discussion threads can be easily located. Active participants and problem solvers will receive bonuses from the big brother :-) who is watching your exchanges (i.e., your class instructor and your TA). However, *you must not describe your simulation or specific details related how your construct your models!*
-
-## Git logistics
-**This is an individual homework.** If you read this description it means that you located the [Github repo for this homework](https://github.com/0x1DOCD00D/CloudOrgSimulator) that includes a fully runnable sample cloud simulation project that you can build you homework solution on. You can fork this repository and your fork will be private, no one else besides you, the TA and your course instructor will have access to your fork. Please remember to grant a read access to your repository to your TA and your instructor. In future, for the team homeworks and the course project, you should grant the write access to your forkmates, but NOT for this homework. You can commit and push your code as many times as you want. Your code will not be visible and it should not be visible to other students (except for your forkmates for a team project, but not for this homework). When you push the code into the remote repo, your instructor and the TAs will see your code in your separate private fork. Announcing a link to your public repo for this homework or inviting other students to join your fork for an individual homework before the submission deadline will result in losing your grade. For grading, only the latest commit timed before the deadline will be considered. **If your first commit will be pushed after the deadline, your grade for the homework will be zero**. For those of you who struggle with the Git, I recommend a book by Ryan Hodson on Ry's Git Tutorial. The other book called Pro Git is written by Scott Chacon and Ben Straub and published by Apress and it is [freely available](https://git-scm.com/book/en/v2/). There are multiple videos on youtube that go into details of the Git organization and use.
-
-Please follow this naming convention to designate your authorship while submitting your work in README.md: "Firstname Lastname" without quotes, where you specify your first and last names **exactly as you are registered with the University system**, so that we can easily recognize your submission. I repeat, make sure that you will give both your TA and the course instructor the read/write access to your *private forked repository* so that we can leave the file feedback.txt with the explanation of the grade assigned to your homework.
-
-## Discussions and submission
-As it is mentioned above, you can post questions and replies, statements, comments, discussion, etc. on Teams. Remember that you cannot share your code and your solutions privately, but you can ask and advise others using Teams and StackOverflow or some other developer networks where resources and sample programs can be found on the Internet, how to resolve dependencies and configuration issues. Yet, your implementation should be your own and you cannot share it. Alternatively, you cannot copy and paste someone else's implementation and put your name on it. Your submissions will be checked for plagiarism. **Copying code from your classmates or from some sites on the Internet will result in severe academic penalties up to the termination of your enrollment in the University**.
+================== Simulation finished at time 201.83 ==================
 
 
-## Submission deadline and logistics
-Friday, September 24, 2021 at 10PM CST via the bitbucket repository. Your submission will include the code for the simulator program, your documentation with instructions and detailed explanations on how to assemble and deploy your cloud simulation along with the results of your simulation and a document that explains these results based on the characteristics and the parameters of your simulations, and what the limitations of your implementation are. Again, do not forget, please make sure that you will give both your TAs and your instructor the read access to your private forked repository. Your code should compile and run from the command line using the commands **sbt clean compile test** and **sbt clean compile run**. Also, you project should be IntelliJ friendly, i.e., your graders should be able to import your code into IntelliJ and run from there. Use .gitignore to exlude files that should not be pushed into the repo.
+
+                                              SIMULATION RESULTS
+
+Cloudlet|Status |DC|Host|Host PEs |VM|VM PEs   |CloudletLen|CloudletPEs|StartTime|FinishTime|ExecTime|Cost|Cost
+ID|       |ID|  ID|CPU cores|ID|CPU cores|         MI|  CPU cores|  Seconds|   Seconds| Seconds| CPU|Total
+---------------------------------------------------------------------------------------------------------------
+       0|SUCCESS| 3|   0|        3| 0|        3|      10000|          3|        0|        13|      12|$0.13|$0.14
+       1|SUCCESS| 3|   1|        3| 1|        3|      10000|          3|       13|        25|      13|$0.13|$0.14
+       2|SUCCESS| 3|   2|        3| 2|        3|      10000|          3|       25|        38|      13|$0.13|$0.14
+       3|SUCCESS| 3|   3|        3| 3|        3|      10000|          3|       38|        50|      13|$0.13|$0.14
+       4|SUCCESS| 3|   0|        3| 4|        3|      10000|          3|       50|        63|      13|$0.13|$0.14
+       5|SUCCESS| 3|   1|        3| 5|        3|      10000|          3|       63|        76|      13|$0.13|$0.14
+       6|SUCCESS| 3|   2|        3| 6|        3|      10000|          3|       76|        88|      13|$0.13|$0.14
+       7|SUCCESS| 3|   3|        3| 7|        3|      10000|          3|       88|       101|      13|$0.13|$0.14
+       8|SUCCESS| 3|   0|        3| 8|        3|      10000|          3|      101|       113|      13|$0.13|$0.14
+       9|SUCCESS| 3|   1|        3| 9|        3|      10000|          3|      113|       126|      13|$0.13|$0.14
+      10|SUCCESS| 3|   0|        3| 0|        3|      10000|          3|      126|       139|      13|$0.13|$0.14
+      11|SUCCESS| 3|   1|        3| 1|        3|      10000|          3|      139|       151|      13|$0.13|$0.14
+      12|SUCCESS| 3|   2|        3| 2|        3|      10000|          3|      151|       164|      13|$0.13|$0.14
+      13|SUCCESS| 3|   3|        3| 3|        3|      10000|          3|      164|       176|      13|$0.13|$0.14
+      14|SUCCESS| 3|   0|        3| 4|        3|      10000|          3|      177|       189|      13|$0.13|$0.14
+      15|SUCCESS| 3|   1|        3| 5|        3|      10000|          3|      189|       202|      13|$0.13|$0.14
+---------------------------------------------------------------------------------------------------------------
+20:45:21.898 [run-main-0] INFO  java.lang.Class -  total processing cost for VMs: 3.0274503 total storageCost for VMs: 10.0 total memory cost for VMs: 200.0 total bwcost for VMs: 50.0 total cost for VMs: 263.02747
+20:45:21.904 [run-main-0] INFO  java.lang.Class -  total cost per bw for all the cloudlets is: 0.08 total cost for executing all the cloudlets are: 2.1762
+[success] Total time: 22 s, completed Sep 24, 2021 8:45:21 PM
+```
+In this example there are 10 VMs being assigned to 4 hosts containing 3 Processing Elements each. The scheduling policy used for VMs are TimeShared and the allocation of VMs are done using RoundRobin in the first data center and Best fit for the second data center.
+The VMs are allocated to the hosts using the RoundRobin allocation policy here the VMs are assigned to the hosts in a cyclic manner.
+The cloudlets are allocated to VMs using space shared scheduling policy. One cloudlet is executed in one VM and others are in the waiting list.
+The total cost for executing each cloudlet is $0.14 and the overall cost is $2.1762
 
 
-## Evaluation criteria
-- the maximum grade for this homework is 8%. Points are subtracted from this maximum grade: for example, saying that 2% is lost if some requirement is not completed means that the resulting grade will be 8%-2% => 6%; if the core homework functionality does not work or it is not implemented as specified in your documentation, your grade will be zero;
-- only some basic cloud simulation examples from the cloudsim repo are given and nothing else is done: zero grade;
-- having less than five unit and/or integration scalatests: up to 5% lost;
-- missing comments and explanations from the simulation program: up to 5% lost;
-- logging is not used in the simulation programs: up to 3% lost;
-- hardcoding the input values in the source code instead of using the suggested configuration libraries: up to 4% lost;
-- for each used *var* for heap-based shared variables or mutable collections: 0.2% lost;
-- for each used *while* or *for* or other loops with induction variables to iterate over a collection: 0.2% lost;
-- no instructions in README.md on how to install and run your simulator: up to 5% lost;
-- the program crashes without completing the core functionality: up to 6% lost;
-- the documentation exists but it is insufficient to understand your cloud simulation design and models and how you assembled and deployed all components of the cloud: up to 5% lost;
-- the minimum grade for this homework cannot be less than zero.
+## Simulation 2
+In Paas user can manage various policies for VMs and cloudlets
+```
+datacenter{
+os = "MacOS"
+CostPerSecond=0.01
+CostPerMem=0.02
+CostPerStorage=0.001
+CostPerBw=0.005
+Number=2
+}
 
-That's it, folks!
+```
+```
+VmAllocationPolicy= ["FirstFit","Simple"]
+CloudletScheduling= "SpaceShared"
+Number of cloudlets = 25
+size of cloudlets = 50000
+```
+```
+================== Simulation finished at time 2602.77 ==================
+
+
+
+                                              SIMULATION RESULTS
+
+Cloudlet|Status |DC|Host|Host PEs |VM|VM PEs   |CloudletLen|CloudletPEs|StartTime|FinishTime|ExecTime|Cost|Cost
+      ID|       |ID|  ID|CPU cores|ID|CPU cores|         MI|  CPU cores|  Seconds|   Seconds| Seconds| CPU|Total
+---------------------------------------------------------------------------------------------------------------
+       0|SUCCESS| 3|   0|        3| 0|        3|      50000|          2|        0|       100|     100|$1.00|$1.01
+       1|SUCCESS| 3|   1|        3| 1|        3|      50000|          2|      100|       200|     100|$1.00|$1.01
+       2|SUCCESS| 3|   1|        3| 2|        3|      50000|          2|      200|       300|     100|$1.00|$1.01
+       3|SUCCESS| 3|   1|        3| 3|        3|      50000|          2|      300|       400|     100|$1.00|$1.01
+       4|SUCCESS| 3|   1|        3| 4|        3|      50000|          2|      400|       500|     100|$1.00|$1.01
+       5|SUCCESS| 3|   1|        3| 5|        3|      50000|          2|      501|       600|     100|$1.00|$1.01
+       6|SUCCESS| 3|   1|        3| 6|        3|      50000|          2|      601|       700|     100|$1.00|$1.01
+       7|SUCCESS| 3|   1|        3| 7|        3|      50000|          2|      701|       800|     100|$1.00|$1.01
+       8|SUCCESS| 3|   1|        3| 8|        3|      50000|          2|      801|       900|     100|$1.00|$1.01
+       9|SUCCESS| 3|   1|        3| 9|        3|      50000|          2|      901|      1000|     100|$1.00|$1.01
+      10|SUCCESS| 3|   1|        3|10|        3|      50000|          2|     1001|      1101|     100|$1.00|$1.01
+      11|SUCCESS| 3|   0|        3| 0|        3|      50000|          2|     1101|      1201|     100|$1.00|$1.01
+      12|SUCCESS| 3|   1|        3| 1|        3|      50000|          2|     1201|      1301|     100|$1.00|$1.01
+      13|SUCCESS| 3|   1|        3| 2|        3|      50000|          2|     1301|      1401|     100|$1.00|$1.01
+      14|SUCCESS| 3|   1|        3| 3|        3|      50000|          2|     1401|      1501|     100|$1.00|$1.01
+      15|SUCCESS| 3|   1|        3| 4|        3|      50000|          2|     1502|      1601|     100|$1.00|$1.01
+      16|SUCCESS| 3|   1|        3| 5|        3|      50000|          2|     1602|      1701|     100|$1.00|$1.01
+      17|SUCCESS| 3|   1|        3| 6|        3|      50000|          2|     1702|      1801|     100|$1.00|$1.01
+      18|SUCCESS| 3|   1|        3| 7|        3|      50000|          2|     1802|      1901|     100|$1.00|$1.01
+      19|SUCCESS| 3|   1|        3| 8|        3|      50000|          2|     1902|      2001|     100|$1.00|$1.01
+      20|SUCCESS| 3|   1|        3| 9|        3|      50000|          2|     2002|      2102|     100|$1.00|$1.01
+      21|SUCCESS| 3|   1|        3|10|        3|      50000|          2|     2102|      2202|     100|$1.00|$1.01
+      22|SUCCESS| 3|   0|        3| 0|        3|      50000|          2|     2202|      2302|     100|$1.00|$1.01
+      23|SUCCESS| 3|   1|        3| 1|        3|      50000|          2|     2302|      2402|     100|$1.00|$1.01
+      24|SUCCESS| 3|   1|        3| 2|        3|      50000|          2|     2402|      2502|     100|$1.00|$1.01
+      25|SUCCESS| 3|   1|        3| 3|        3|      50000|          2|     2503|      2602|     100|$1.00|$1.01
+---------------------------------------------------------------------------------------------------------------
+20:06:10.075 [run-main-0] INFO  java.lang.Class -  total processing cost for VMs: 42.94571 total storageCost for VMs: 11.264001 total memory cost for VMs: 220.0 total bwcost for VMs: 55.0 total cost for VMs: 329.20975
+20:06:10.082 [run-main-0] INFO  java.lang.Class -  total cost per bw for all the cloudlets is: 0.13000000000000003 total cost for executing all the cloudlets are: 26.2856
+[success] Total time: 20 s, completed Sep 24, 2021 8:06:10 PM
+```
+In this example there are 11 VMs being assigned to 4 hosts containing 3 Processing Elements each. The scheduling policy used for VMs are TimeShared and the allocation of VMs are done using FirstFit in the first data center and SimpleAllocation for the second data center.
+There are 25 cloudlets that are allocated to VMs using space shared scheduling policy. The VMs are allocated to the hosts using the Simple allocation policy here the VMs are assigned to the hosts having the least amount PEs in use.
+The total cost for executing each cloudlet is $1.01 and the overall cost is $26.2856. The cost is high because the size of cloudlets executed on VMs are more (50,000). The utilization ratio is set to 0.5 
+
+## Simulation 3
+In Saas the user has no control over the hosts or VMs, but can access the scheduler algorithm for the cloudlets.
+```
+================== Simulation finished at time 842.22 ==================
+datacenter {
+Number = 2
+}
+cloudlet {
+Size = 20000
+RAMInMBs = 10000
+PEs = 3
+Number = 20
+CloudletScheduling="SpaceShared"
+}
+
+
+                                              SIMULATION RESULTS
+
+Cloudlet|Status |DC|Host|Host PEs |VM|VM PEs   |CloudletLen|CloudletPEs|StartTime|FinishTime|ExecTime|Cost|Cost
+ID|       |ID|  ID|CPU cores|ID|CPU cores|         MI|  CPU cores|  Seconds|   Seconds| Seconds| CPU|Total
+---------------------------------------------------------------------------------------------------------------
+       0|SUCCESS| 3|   0|        3| 0|        3|      20000|          3|        0|        40|      40|$0.40|$0.41
+       1|SUCCESS| 3|   0|        3| 1|        3|      20000|          3|       40|        80|      40|$0.40|$0.41
+       2|SUCCESS| 3|   0|        3| 2|        3|      20000|          3|       80|       120|      40|$0.40|$0.41
+       3|SUCCESS| 3|   0|        3| 3|        3|      20000|          3|      120|       160|      40|$0.40|$0.41
+       4|SUCCESS| 3|   0|        3| 4|        3|      20000|          3|      160|       200|      40|$0.40|$0.41
+       5|SUCCESS| 3|   0|        3| 5|        3|      20000|          3|      201|       240|      40|$0.40|$0.41
+       6|SUCCESS| 3|   0|        3| 6|        3|      20000|          3|      241|       280|      40|$0.40|$0.41
+       7|SUCCESS| 3|   0|        3| 7|        3|      20000|          3|      281|       320|      40|$0.40|$0.41
+       8|SUCCESS| 3|   0|        3| 8|        3|      20000|          3|      321|       360|      40|$0.40|$0.41
+       9|SUCCESS| 3|   0|        3| 9|        3|      20000|          3|      361|       400|      40|$0.40|$0.41
+      10|SUCCESS| 3|   0|        3|10|        3|      20000|          3|      401|       441|      40|$0.40|$0.41
+      11|SUCCESS| 3|   0|        3| 0|        3|      20000|          3|      441|       481|      40|$0.40|$0.41
+      12|SUCCESS| 3|   0|        3| 1|        3|      20000|          3|      481|       521|      40|$0.40|$0.41
+      13|SUCCESS| 3|   0|        3| 2|        3|      20000|          3|      521|       561|      40|$0.40|$0.41
+      14|SUCCESS| 3|   0|        3| 3|        3|      20000|          3|      561|       601|      40|$0.40|$0.41
+      15|SUCCESS| 3|   0|        3| 4|        3|      20000|          3|      602|       641|      40|$0.40|$0.41
+      16|SUCCESS| 3|   0|        3| 5|        3|      20000|          3|      642|       681|      40|$0.40|$0.41
+      17|SUCCESS| 3|   0|        3| 6|        3|      20000|          3|      682|       721|      40|$0.40|$0.41
+      18|SUCCESS| 3|   0|        3| 7|        3|      20000|          3|      722|       761|      40|$0.40|$0.41
+      19|SUCCESS| 3|   0|        3| 8|        3|      20000|          3|      762|       801|      40|$0.40|$0.41
+      20|SUCCESS| 3|   0|        3| 9|        3|      20000|          3|      802|       842|      40|$0.40|$0.41
+---------------------------------------------------------------------------------------------------------------
+20:29:59.567 [run-main-0] INFO  java.lang.Class -  total processing cost for VMs: 13.896631 total storageCost for VMs: 11.0 total memory cost for VMs: 220.0 total bwcost for VMs: 55.0 total cost for VMs: 299.89667
+20:29:59.574 [run-main-0] INFO  java.lang.Class -  total cost per bw for all the cloudlets is: 0.10500000000000002 total cost for executing all the cloudlets are: 8.6301
+[success] Total time: 25 s, completed Sep 24, 2021 8:29:59 PM
+```
+
+In this example there are 11 VMs being assigned to 4 hosts containing 3 Processing Elements each. The scheduling policy used for VMs are TimeShared and the allocation of VMs are done using BestFit in the first data center and RoundRobin for the second data center.
+There are 20 cloudlets that are allocated to VMs using space shared scheduling policy. The VMs are allocated to the hosts using the BestFit allocation policy here the VMs are assigned to the hosts which have the least power consumption.
+The total cost for executing each cloudlet is $0.41 and the overall cost is $8.631. the cost is slightly high because the size of cloudlets executed on VMs are 20000. The utilization ratio is set to 0.5.
+
+## Test
+6 tests added 
+1) Utilization ratio is Iaas 
+2) mips capcity of VMs in Iaas
+3) Size of cloudlets in Paas
+4) Number of cloudlets in Paas
+5) Size of cloudlets  in Saas
+6) Scheduling algorithm in Saas
+
+
+## FutureWork
+Analysing which configuration is cost-effective to the customer.
+Use Multiple brokers
+Scheduling efficient algorithms to allocate VMs to hosts.
+
+
+
+
