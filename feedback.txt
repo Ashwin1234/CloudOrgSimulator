@@ -10,7 +10,7 @@ if the core homework functionality does not work or it is not implemented as spe
 
 Grading Criteria:
  - only some basic cloud simulation examples from the cloudsim repo are given and nothing else is done:
-    * non-trivial simulation, found 1 java source: -2%
+    * non-trivial simulation: -0%
  - having less than five unit and/or integration scalatests:
     * more than 5 unit tests present: -0%
  - missing comments and explanations from the simulation program:
@@ -30,6 +30,4 @@ Grading Criteria:
  - the documentation exists but it is insufficient to understand your cloud simulation design and models and how you assembled and deployed all components of the cloud:
     * documentation exits: -0%
 
-Total grade: 6%
-
-Comment: the entire project needs to be in scala.
+Total grade: 8%
